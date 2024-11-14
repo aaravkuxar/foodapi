@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 import random
 
@@ -115,19 +115,14 @@ def get_recipe_by_id(id):
     # Find the recipe with the matching Recipe_id
     recipe = next((recipe for recipe in recipes_data["payload"] if recipe["Recipe_id"] == id), None)
     
-    # If recipe is found, return it; otherwise, return a 404 error
     if recipe:
-        response = {
+        return jsonify({
             "success": "true",
             "message": "Recipe fetched successfully.",
             "payload": recipe
-        }
+        })
     else:
-        response = {
-            "success": "false",
-            "message": "Recipe not found."
-        }
-    return jsonify(response)
+        abort(404, description="Recipe not found")
 
 if __name__ == '__main__':
     app.run(debug=True)
